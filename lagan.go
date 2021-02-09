@@ -207,15 +207,11 @@ func PrintHex(tag string, level FilterLevel, bytes []uint8) {
 	prefix := fmt.Sprintf("%c/%s", gLevelCh[level], tag)
 	newFormat := prefix + ": " + "%s"
 
-	s1 := fmt.Sprintf(newFormat, tag)
-	s2 := fmt.Sprintf(newFormat, s)
-
+	s1 := fmt.Sprintf(newFormat, s)
 	gInfoLogger.Println(s1)
-	gInfoLogger.Println(s2)
 	gInfoLoggerStd.Println(s1)
-	gInfoLoggerStd.Println(s2)
 
-	gLogFileSize += len(s1) + len(s2)
+	gLogFileSize += len(s1)
 	if gLogFileSize > gLogFileMaxSize {
 		_ = createLogFile()
 	}
