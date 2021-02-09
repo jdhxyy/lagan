@@ -98,35 +98,42 @@ func input() {
 		}
 		if s == "filter_error" {
 			SetFilterLevel(LevelError)
+			fmt.Println("set level:ERROR")
 			Resume()
 			continue
 		}
 		if s == "filter_warn" {
 			SetFilterLevel(LevelWarn)
+			fmt.Println("set level:WARN")
 			Resume()
 			continue
 		}
 		if s == "filter_info" {
 			SetFilterLevel(LevelInfo)
+			fmt.Println("set level:INFO")
 			Resume()
 			continue
 		}
 		if s == "filter_debug" {
 			SetFilterLevel(LevelDebug)
+			fmt.Println("set level:debug")
 			Resume()
 			continue
 		}
 		if s == "filter_off" {
 			SetFilterLevel(LevelOff)
+			fmt.Println("set level:OFF")
 			Resume()
 			continue
 		}
 		if s == "pause" {
 			Pause()
+			fmt.Println("pause print")
 			continue
 		}
 		if s == "resume" {
 			Resume()
+			fmt.Println("resume print")
 			continue
 		}
 	}
@@ -229,22 +236,22 @@ func IsPause() bool {
 	return gIsPause
 }
 
-// LD 打印debug信息
-func LD(tag string, format string, a ...interface{}) {
+// Debug 打印debug信息
+func Debug(tag string, format string, a ...interface{}) {
 	Print(tag, LevelDebug, format, a...)
 }
 
-// LI 打印info信息
-func LI(tag string, format string, a ...interface{}) {
+// Info 打印info信息
+func Info(tag string, format string, a ...interface{}) {
 	Print(tag, LevelInfo, format, a...)
 }
 
-// LW 打印warn信息
-func LW(tag string, format string, a ...interface{}) {
+// Warn 打印warn信息
+func Warn(tag string, format string, a ...interface{}) {
 	Print(tag, LevelWarn, format, a...)
 }
 
-// LE 打印error信息
-func LE(tag string, format string, a ...interface{}) {
+// Error 打印error信息
+func Error(tag string, format string, a ...interface{}) {
 	Print(tag, LevelError, format, a...)
 }
