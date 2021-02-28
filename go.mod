@@ -1,3 +1,3 @@
-module gitee.com/jdhxyy/lagan
+module github.com/jdhxyy/lagan
 
 go 1.12
