@@ -16,7 +16,7 @@ lagan取名来自于宜家的水龙头"拉根"。
 ````go
 package main
 
-import "gitee.com/jdhxyy/lagan"
+import "github.com/jdhxyy/lagan"
 
 const Tag = "testlog"
 
@@ -46,7 +46,7 @@ func main () {
 ````go
 package main
 
-import "gitee.com/jdhxyy/lagan"
+import "github.com/jdhxyy/lagan"
 
 const Tag = "testlog"
 
