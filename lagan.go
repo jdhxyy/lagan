@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync"
 	"time"
 )
 
@@ -50,6 +51,7 @@ var gLogFileMaxSize = LogFileSizeDefault * 1024 * 1024
 var gLogFile *os.File = nil
 var gFilterLevel FilterLevel = LogLevelInfo
 var gIsLoad = false
+var gMutex sync.Mutex
 
 // Load 模块载入
 // logFileMaxSize是日志文件切割的大小.单位:M字节.如果传入0,则使用默认切割文件大小
@@ -154,6 +156,18 @@ func printHelp() {
 	fmt.Println("*******************************************")
 }
 
+// 读取GetLogger
+func GetLogger() (*log.Logger, *log.Logger) {
+	return gInfoLogger, gInfoLoggerStd
+}
+
+// Import 导入日志模块
+func Import(logger, loggerStd *log.Logger) {
+	gInfoLogger = logger
+	gInfoLoggerStd = loggerStd
+	gIsLoad = true
+}
+
 // SetFilterLevel 设置日志级别
 func SetFilterLevel(level FilterLevel) {
 	gFilterLevel = level
@@ -173,6 +187,10 @@ func Print(tag string, level FilterLevel, format string, a ...interface{}) {
 	prefix := fmt.Sprintf("%c/%s", gLevelCh[level], tag)
 	newFormat := prefix + ": " + format
 	s := fmt.Sprintf(newFormat, a...)
+
+	gMutex.Lock()
+	defer gMutex.Unlock()
+
 	gInfoLogger.Println(s)
 	gInfoLoggerStd.Println(s)
 
@@ -208,6 +226,10 @@ func PrintHex(tag string, level FilterLevel, bytes []uint8) {
 	newFormat := prefix + ": " + "%s"
 
 	s1 := fmt.Sprintf(newFormat, s)
+
+	gMutex.Lock()
+	defer gMutex.Unlock()
+
 	gInfoLogger.Println(s1)
 	gInfoLoggerStd.Println(s1)
 
