@@ -27,6 +27,10 @@ const (
 
 var gLevelCh = [...]byte{'O', 'D', 'I', 'W', 'E'}
 
+// 日志颜色
+// 30 黑色 31 红色 32 绿色 33 黄色 34 蓝色 35 紫红色 36 青蓝色 37 白色
+var levelColor = [...]FilterLevel{30, 37, 36, 35, 31}
+
 const (
 	// 日志级别
 	LogLevelOff   = 0
@@ -52,6 +56,7 @@ var gLogFile *os.File = nil
 var gFilterLevel FilterLevel = LogLevelInfo
 var gIsLoad = false
 var gMutex sync.Mutex
+var isColor = false
 
 // Load 模块载入
 // logFileMaxSize是日志文件切割的大小.单位:M字节.如果传入0,则使用默认切割文件大小
@@ -178,6 +183,11 @@ func GetFilterLevel() FilterLevel {
 	return gFilterLevel
 }
 
+// EnableColor 使能日志带颜色输出
+func EnableColor(enable bool) {
+	isColor = enable
+}
+
 // Print 日志打印
 func Print(tag string, level FilterLevel, format string, a ...interface{}) {
 	if gIsLoad == false || gIsPause || gFilterLevel == LevelOff || level < gFilterLevel {
@@ -192,7 +202,11 @@ func Print(tag string, level FilterLevel, format string, a ...interface{}) {
 	defer gMutex.Unlock()
 
 	gInfoLogger.Println(s)
-	gInfoLoggerStd.Println(s)
+	if isColor {
+		gInfoLoggerStd.Printf(" %c[%d;%d;%dm%s%c[0m\n", 0x1B, 7, 40, levelColor[level], s, 0x1B)
+	} else {
+		gInfoLoggerStd.Println(s)
+	}
 
 	gLogFileSize += len(s)
 	if gLogFileSize > gLogFileMaxSize {
@@ -231,7 +245,11 @@ func PrintHex(tag string, level FilterLevel, bytes []uint8) {
 	defer gMutex.Unlock()
 
 	gInfoLogger.Println(s1)
-	gInfoLoggerStd.Println(s1)
+	if isColor {
+		gInfoLoggerStd.Printf(" %c[%d;%d;%dm%s%c[0m\n", 0x1B, 7, 40, levelColor[level], s1, 0x1B)
+	} else {
+		gInfoLoggerStd.Println(s1)
+	}
 
 	gLogFileSize += len(s1)
 	if gLogFileSize > gLogFileMaxSize {

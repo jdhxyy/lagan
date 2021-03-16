@@ -8,11 +8,18 @@ func TestLoad(t *testing.T) {
 
 func TestPrint(t *testing.T) {
 	_ = Load(0)
+	SetFilterLevel(LevelDebug)
+	EnableColor(true)
+	Print("test", LevelOff, "TestPrintOut1:%d", 100)
+	Print("test", LevelDebug, "TestPrintOut1:%d", 100)
+	Print("test", LevelInfo, "TestPrintOut1:%d", 100)
 	Print("test", LevelWarn, "TestPrintOut1:%d", 100)
+	Print("test", LevelError, "TestPrintOut1:%d", 100)
 }
 
 func TestPrintHex(t *testing.T) {
 	_ = Load(0)
+	EnableColor(true)
 	s := make([]uint8, 100)
 	for i := 0; i < 100; i++ {
 		s[i] = uint8(i)
