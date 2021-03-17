@@ -19,7 +19,7 @@ func TestPrint(t *testing.T) {
 
 func TestPrintHex(t *testing.T) {
 	_ = Load(0)
-	EnableColor(true)
+	EnableColor(false)
 	s := make([]uint8, 100)
 	for i := 0; i < 100; i++ {
 		s[i] = uint8(i)

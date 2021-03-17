@@ -203,7 +203,7 @@ func Print(tag string, level FilterLevel, format string, a ...interface{}) {
 
 	gInfoLogger.Println(s)
 	if isColor {
-		gInfoLoggerStd.Printf(" %c[%d;%d;%dm%s%c[0m\n", 0x1B, 7, 40, levelColor[level], s, 0x1B)
+		gInfoLoggerStd.Printf("%c[%d;%d;%dm%s%c[0m\n", 0x1B, 7, 40, levelColor[level], s, 0x1B)
 	} else {
 		gInfoLoggerStd.Println(s)
 	}
@@ -246,7 +246,7 @@ func PrintHex(tag string, level FilterLevel, bytes []uint8) {
 
 	gInfoLogger.Println(s1)
 	if isColor {
-		gInfoLoggerStd.Printf(" %c[%d;%d;%dm%s%c[0m\n", 0x1B, 7, 40, levelColor[level], s1, 0x1B)
+		gInfoLoggerStd.Printf("%c[%d;%d;%dm%s%c[0m%s\n", 0x1B, 7, 40, levelColor[level], prefix, 0x1B, s)
 	} else {
 		gInfoLoggerStd.Println(s1)
 	}
