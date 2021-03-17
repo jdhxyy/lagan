@@ -11,6 +11,7 @@ lagan取名来自于宜家的水龙头"拉根"。
 - 支持日志文件自动分割
 - 支持终端交互控制日志输出级别等功能
 - 支持二进制流打印
+- 支持带颜色的日志打印
 
 ## 示例
 ````go
@@ -95,3 +96,26 @@ resume:resume log
 ````
 
 可以在终端敲对应的命令控制日志功能。
+
+## 颜色控制
+可以使用EnableColor函数开控制打开或者关闭日志颜色，默认关闭颜色。
+````go
+func main() {
+    _ = lagan.Load(0)
+    lagan.SetFilterLevel(lagan.LevelDebug)
+    lagan.EnableColor(true)
+    lagan.Debug("system", "test print:123456789")
+    lagan.Info("system", "test print:123456789")
+    lagan.Warn("system", "test print:123456789")
+    lagan.Error("system", "test print:123456789")
+
+    s := make([]uint8, 100)
+    for i := 0; i < 100; i++ {
+        s[i] = uint8(i)
+    }
+    lagan.PrintHex("test", lagan.LevelInfo, s)
+}
+````
+
+![图片](https://user-images.githubusercontent.com/1323843/111395954-01cb2000-86f9-11eb-9cf7-c689eec1f77a.png)
+
