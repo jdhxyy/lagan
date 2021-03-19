@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"sync"
 	"time"
 )
 
@@ -55,7 +54,6 @@ var gLogFileMaxSize = LogFileSizeDefault * 1024 * 1024
 var gLogFile *os.File = nil
 var gFilterLevel FilterLevel = LogLevelInfo
 var gIsLoad = false
-var gMutex sync.Mutex
 var isColor = false
 
 // Load 模块载入
@@ -198,9 +196,6 @@ func Print(tag string, level FilterLevel, format string, a ...interface{}) {
 	newFormat := prefix + ": " + format
 	s := fmt.Sprintf(newFormat, a...)
 
-	gMutex.Lock()
-	defer gMutex.Unlock()
-
 	gInfoLogger.Println(s)
 	if isColor {
 		gInfoLoggerStd.Printf("%c[%d;%d;%dm%s%c[0m\n", 0x1B, 7, 40, levelColor[level], s, 0x1B)
@@ -240,9 +235,6 @@ func PrintHex(tag string, level FilterLevel, bytes []uint8) {
 	newFormat := prefix + ": " + "%s"
 
 	s1 := fmt.Sprintf(newFormat, s)
-
-	gMutex.Lock()
-	defer gMutex.Unlock()
 
 	gInfoLogger.Println(s1)
 	if isColor {
