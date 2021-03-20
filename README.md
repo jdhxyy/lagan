@@ -8,6 +8,7 @@ lagan取名来自于宜家的水龙头"拉根"。
 ## 功能
 - 支持日志在终端实时打印
 - 支持日志保存在文件
+- 支持日志不保存文件,仅终端打印
 - 支持日志文件自动分割
 - 支持终端交互控制日志输出级别等功能
 - 支持二进制流打印
@@ -22,8 +23,8 @@ import "github.com/jdhxyy/lagan"
 const Tag = "testlog"
 
 func main () {
-    // 日志模块载入.全局载入一次,参数是分割文件大小,默认是10M
-    _ = lagan.Load(0)
+    // 日志模块载入.全局载入一次,参数是分割文件大小,默认值是10M
+    _ = lagan.Load(lagan.LogFileSizeDefault)
 
     // 默认输出级别是info,本行不会打印
     lagan.Debug(Tag, "debug test print")
@@ -52,7 +53,7 @@ import "github.com/jdhxyy/lagan"
 const Tag = "testlog"
 
 func main () {
-    _ = lagan.Load(0)
+    _ = lagan.Load(lagan.LogFileSizeDefault)
 
     arr := make([]uint8, 100)
     for i := 0; i < 100; i++ {
@@ -101,7 +102,7 @@ resume:resume log
 可以使用EnableColor函数开控制打开或者关闭日志颜色，默认关闭颜色。
 ````go
 func main() {
-    _ = lagan.Load(0)
+    _ = lagan.Load(lagan.LogFileSizeDefault)
     lagan.SetFilterLevel(lagan.LevelDebug)
     lagan.EnableColor(true)
     lagan.Debug("system", "test print:123456789")
@@ -119,3 +120,8 @@ func main() {
 
 ![图片](https://user-images.githubusercontent.com/1323843/111395954-01cb2000-86f9-11eb-9cf7-c689eec1f77a.png)
 
+## 日志文件控制
+文件分割大小设置为0,则不会保存到日志文件,仅终端打印：
+```python
+lagan.load(0)
+```

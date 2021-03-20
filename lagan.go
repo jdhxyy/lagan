@@ -6,6 +6,7 @@
 package lagan
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -31,38 +32,32 @@ var gLevelCh = [...]byte{'O', 'D', 'I', 'W', 'E'}
 var levelColor = [...]FilterLevel{30, 37, 36, 35, 31}
 
 const (
-	// 日志级别
-	LogLevelOff   = 0
-	LogLevelDebug = 1
-	LogLevelInfo  = 2
-	LogLevelWarn  = 3
-	LogLevelError = 4
-
 	// 日志文件默认大小.单位:M字节
 	LogFileSizeDefault = 10
 )
-
-type LogItem struct {
-	name  string
-	level int
-}
 
 var gInfoLogger, gInfoLoggerStd *log.Logger
 var gIsPause = false
 var gLogFileSize = 0
 var gLogFileMaxSize = LogFileSizeDefault * 1024 * 1024
 var gLogFile *os.File = nil
-var gFilterLevel FilterLevel = LogLevelInfo
+var gFilterLevel FilterLevel = LevelInfo
 var gIsLoad = false
 var isColor = false
 
 // Load 模块载入
-// logFileMaxSize是日志文件切割的大小.单位:M字节.如果传入0,则使用默认切割文件大小
+// logFileMaxSize是日志文件切割的大小.单位:M字节.如果传入0,表示不使用日志文件
 func Load(logFileMaxSize int) error {
-	if logFileMaxSize != 0 {
-		gLogFileMaxSize = logFileMaxSize * 1024 * 1024
+	if gIsLoad {
+		return errors.New("already load")
 	}
+
+	gLogFileMaxSize = logFileMaxSize * 1024 * 1024
 	gInfoLoggerStd = log.New(os.Stdout, "", log.LstdFlags)
+	if gLogFileMaxSize <= 0 {
+		gIsLoad = true
+		return nil
+	}
 	err := createLogFile()
 	if err == nil {
 		gIsLoad = true
@@ -147,7 +142,7 @@ func input() {
 func printHelp() {
 	fmt.Println("*******************************************")
 	fmt.Println("            lagan help shell             ")
-	fmt.Printf("current level:%c,is pause:%v\n", gLevelCh[gFilterLevel], IsPause())
+	fmt.Printf("current level:%c,is pause:%v\n", gLevelCh[gFilterLevel], gIsPause)
 	fmt.Println("help:print help")
 	fmt.Println("filter_error:filter error level")
 	fmt.Println("filter_warn:filter warn level")
@@ -157,18 +152,6 @@ func printHelp() {
 	fmt.Println("pause:pause log")
 	fmt.Println("resume:resume log")
 	fmt.Println("*******************************************")
-}
-
-// 读取GetLogger
-func GetLogger() (*log.Logger, *log.Logger) {
-	return gInfoLogger, gInfoLoggerStd
-}
-
-// Import 导入日志模块
-func Import(logger, loggerStd *log.Logger) {
-	gInfoLogger = logger
-	gInfoLoggerStd = loggerStd
-	gIsLoad = true
 }
 
 // SetFilterLevel 设置日志级别
@@ -196,7 +179,9 @@ func Print(tag string, level FilterLevel, format string, a ...interface{}) {
 	newFormat := prefix + ": " + format
 	s := fmt.Sprintf(newFormat, a...)
 
-	gInfoLogger.Println(s)
+	if gLogFileMaxSize > 0 {
+		gInfoLogger.Println(s)
+	}
 	if isColor {
 		gInfoLoggerStd.Printf("%c[%d;%d;%dm%s%c[0m\n", 0x1B, 7, 40, levelColor[level], s, 0x1B)
 	} else {
@@ -236,7 +221,9 @@ func PrintHex(tag string, level FilterLevel, bytes []uint8) {
 
 	s1 := fmt.Sprintf(newFormat, s)
 
-	gInfoLogger.Println(s1)
+	if gLogFileMaxSize > 0 {
+		gInfoLogger.Println(s1)
+	}
 	if isColor {
 		gInfoLoggerStd.Printf("%c[%d;%d;%dm%s%c[0m%s\n", 0x1B, 7, 40, levelColor[level], prefix, 0x1B, s)
 	} else {
