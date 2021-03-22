@@ -53,7 +53,7 @@ func Load(logFileMaxSize int) error {
 	}
 
 	gLogFileMaxSize = logFileMaxSize * 1024 * 1024
-	gInfoLoggerStd = log.New(os.Stdout, "", log.LstdFlags)
+	gInfoLoggerStd = log.New(os.Stdout, "", log.Ldate|log.Lmicroseconds)
 	if gLogFileMaxSize <= 0 {
 		gIsLoad = true
 		return nil
@@ -78,7 +78,7 @@ func createLogFile() error {
 		_ = gLogFile.Close()
 	}
 	gLogFile = logFile
-	gInfoLogger = log.New(gLogFile, "", log.LstdFlags)
+	gInfoLogger = log.New(gLogFile, "", log.Ldate|log.Lmicroseconds)
 	gLogFileSize = 0
 	return nil
 }
