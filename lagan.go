@@ -181,16 +181,15 @@ func Print(tag string, level FilterLevel, format string, a ...interface{}) {
 
 	if gLogFileMaxSize > 0 {
 		gInfoLogger.Println(s)
+		gLogFileSize += len(s)
+		if gLogFileSize > gLogFileMaxSize {
+			_ = createLogFile()
+		}
 	}
 	if isColor {
 		gInfoLoggerStd.Printf("%c[%d;%d;%dm%s%c[0m\n", 0x1B, 7, 40, levelColor[level], s, 0x1B)
 	} else {
 		gInfoLoggerStd.Println(s)
-	}
-
-	gLogFileSize += len(s)
-	if gLogFileSize > gLogFileMaxSize {
-		_ = createLogFile()
 	}
 }
 
