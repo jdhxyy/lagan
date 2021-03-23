@@ -222,16 +222,15 @@ func PrintHex(tag string, level FilterLevel, bytes []uint8) {
 
 	if gLogFileMaxSize > 0 {
 		gInfoLogger.Println(s1)
+		gLogFileSize += len(s1)
+		if gLogFileSize > gLogFileMaxSize {
+			_ = createLogFile()
+		}
 	}
 	if isColor {
 		gInfoLoggerStd.Printf("%c[%d;%d;%dm%s%c[0m%s\n", 0x1B, 7, 40, levelColor[level], prefix, 0x1B, s)
 	} else {
 		gInfoLoggerStd.Println(s1)
-	}
-
-	gLogFileSize += len(s1)
-	if gLogFileSize > gLogFileMaxSize {
-		_ = createLogFile()
 	}
 }
 
