@@ -5,6 +5,10 @@
 
 lagan取名来自于宜家的水龙头"拉根"。
 
+## 开源
+- [github上的项目地址](https://github.com/jdhxyy/lagan)
+- [gitee上的项目地址](https://gitee.com/jdhxyy/lagan)
+
 ## 功能
 - 支持日志在终端实时打印
 - 支持日志保存在文件
