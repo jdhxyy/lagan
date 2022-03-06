@@ -36,3 +36,16 @@ func TestCase1(t *testing.T) {
 func TestCase2(t *testing.T) {
 	_ = Load(0)
 }
+
+func TestCase3(t *testing.T) {
+	Print("test", LevelOff, "TestPrintOut1:%d", 100)
+	Print("test", LevelDebug, "TestPrintOut1:%d", 100)
+	Print("test", LevelInfo, "TestPrintOut1:%d", 100)
+
+	_ = Load(LogFileSizeDefault)
+	SetFilterLevel(LevelDebug)
+	EnableColor(true)
+
+	Print("test", LevelWarn, "TestPrintOut1:%d", 100)
+	Print("test", LevelError, "TestPrintOut1:%d", 100)
+}

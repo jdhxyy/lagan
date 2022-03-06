@@ -32,18 +32,22 @@ var gLevelCh = [...]byte{'O', 'D', 'I', 'W', 'E'}
 var levelColor = [...]FilterLevel{30, 37, 36, 35, 31}
 
 const (
-	// 日志文件默认大小.单位:M字节
+	// LogFileSizeDefault 日志文件默认大小.单位:M字节
 	LogFileSizeDefault = 10
 )
 
 var gInfoLogger, gInfoLoggerStd *log.Logger
 var gIsPause = false
 var gLogFileSize = 0
-var gLogFileMaxSize = LogFileSizeDefault * 1024 * 1024
+var gLogFileMaxSize = 0
 var gLogFile *os.File = nil
 var gFilterLevel FilterLevel = LevelInfo
 var gIsLoad = false
 var isColor = false
+
+func init() {
+	gInfoLoggerStd = log.New(os.Stdout, "", log.Ldate|log.Lmicroseconds)
+}
 
 // Load 模块载入
 // logFileMaxSize是日志文件切割的大小.单位:M字节.如果传入0,表示不使用日志文件
@@ -53,7 +57,6 @@ func Load(logFileMaxSize int) error {
 	}
 
 	gLogFileMaxSize = logFileMaxSize * 1024 * 1024
-	gInfoLoggerStd = log.New(os.Stdout, "", log.Ldate|log.Lmicroseconds)
 	if gLogFileMaxSize <= 0 {
 		gIsLoad = true
 		return nil
@@ -159,7 +162,7 @@ func SetFilterLevel(level FilterLevel) {
 	gFilterLevel = level
 }
 
-// 显示过滤日志等级
+// GetFilterLevel 显示过滤日志等级
 func GetFilterLevel() FilterLevel {
 	return gFilterLevel
 }
@@ -171,7 +174,7 @@ func EnableColor(enable bool) {
 
 // Print 日志打印
 func Print(tag string, level FilterLevel, format string, a ...interface{}) {
-	if gIsLoad == false || gIsPause || gFilterLevel == LevelOff || level < gFilterLevel {
+	if gIsPause || gFilterLevel == LevelOff || level < gFilterLevel {
 		return
 	}
 
@@ -193,10 +196,10 @@ func Print(tag string, level FilterLevel, format string, a ...interface{}) {
 	}
 }
 
-// PipBoyPrintHex 打印16进制字节流
+// PrintHex 打印16进制字节流
 // tag是标记,在字节流打印之前会打印此标记
 func PrintHex(tag string, level FilterLevel, bytes []uint8) {
-	if gIsLoad == false || gIsPause || gFilterLevel == LevelOff || level < gFilterLevel {
+	if gIsPause || gFilterLevel == LevelOff || level < gFilterLevel {
 		return
 	}
 
