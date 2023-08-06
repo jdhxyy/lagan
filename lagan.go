@@ -64,7 +64,6 @@ func Load(logFileMaxSize int) error {
 	err := createLogFile()
 	if err == nil {
 		gIsLoad = true
-		go input()
 	}
 	return err
 }
@@ -84,77 +83,6 @@ func createLogFile() error {
 	gInfoLogger = log.New(gLogFile, "", log.Ldate|log.Lmicroseconds)
 	gLogFileSize = 0
 	return nil
-}
-
-func input() {
-	var s string
-	var err error
-	for {
-		_, err = fmt.Scanln(&s)
-		if err != nil {
-			continue
-		}
-
-		if s == "help" {
-			printHelp()
-			continue
-		}
-		if s == "filter_error" {
-			SetFilterLevel(LevelError)
-			fmt.Println("set level:ERROR")
-			Resume()
-			continue
-		}
-		if s == "filter_warn" {
-			SetFilterLevel(LevelWarn)
-			fmt.Println("set level:WARN")
-			Resume()
-			continue
-		}
-		if s == "filter_info" {
-			SetFilterLevel(LevelInfo)
-			fmt.Println("set level:INFO")
-			Resume()
-			continue
-		}
-		if s == "filter_debug" {
-			SetFilterLevel(LevelDebug)
-			fmt.Println("set level:debug")
-			Resume()
-			continue
-		}
-		if s == "filter_off" {
-			SetFilterLevel(LevelOff)
-			fmt.Println("set level:OFF")
-			Resume()
-			continue
-		}
-		if s == "pause" {
-			Pause()
-			fmt.Println("pause print")
-			continue
-		}
-		if s == "resume" {
-			Resume()
-			fmt.Println("resume print")
-			continue
-		}
-	}
-}
-
-func printHelp() {
-	fmt.Println("*******************************************")
-	fmt.Println("            lagan help shell             ")
-	fmt.Printf("current level:%c,is pause:%v\n", gLevelCh[gFilterLevel], gIsPause)
-	fmt.Println("help:print help")
-	fmt.Println("filter_error:filter error level")
-	fmt.Println("filter_warn:filter warn level")
-	fmt.Println("filter_info:filter info level")
-	fmt.Println("filter_debug:filter debug level")
-	fmt.Println("filter_off:filter off level")
-	fmt.Println("pause:pause log")
-	fmt.Println("resume:resume log")
-	fmt.Println("*******************************************")
 }
 
 // SetFilterLevel 设置日志级别
